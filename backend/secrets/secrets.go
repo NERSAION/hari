@@ -9,9 +9,21 @@ type Secrets map[string]string
 
 func ReadSecrets(name string) (Secrets, error) {
 	secrets := make(Secrets)
-	data, err := os.ReadFile("secrets/" + name)
+	err := readFile("general", secrets)
 	if err != nil {
 		return nil, err
+	}
+	err = readFile(name, secrets)
+	if err != nil {
+		return nil, err
+	}
+	return secrets, nil
+}
+
+func readFile(name string, secrets Secrets) error {
+	data, err := os.ReadFile("secrets/secrets/" + name)
+	if err != nil {
+		return err
 	}
 	file := string(data)
 	for _, line := range strings.Split(file, "\n") {
@@ -22,5 +34,5 @@ func ReadSecrets(name string) (Secrets, error) {
 			continue
 		}
 	}
-	return secrets, nil
+	return nil
 }
